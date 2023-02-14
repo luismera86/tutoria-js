@@ -7,17 +7,15 @@ let mascotas = [];
 function menuOpciones() {
   let opcion = parseInt(
     prompt(
-      'Por favor elije una de las siguientes opciones \n1) Registrar un usuario\n2) Registrar una mascota para adopción\n3) Adoptar una mascota \n4) Salir'
+      'Por favor elije una de las siguientes opciones \n1) Registrar una mascota para adopción\n2) Adoptar una mascota \n3) Salir'
     )
   );
 
   if (opcion === 1) {
-    registroUsuario();
-  } else if (opcion === 2) {
     registrarMascota();
+  } else if (opcion === 2) {
+    menuAdopcion();
   } else if (opcion === 3) {
-    adoptarMascota();
-  } else if (opcion === 4) {
     alert('Gracias vuelva pronto');
     return;
   } else {
@@ -41,19 +39,20 @@ function registroUsuario() {
     telefono,
   };
 
-  alert(`El usuario ${nombre} ${apellido} a sido registrado con éxito ahora lo redirigiremos al menú principal`);
-  menuOpciones();
+  alert(`El usuario ${nombre} ${apellido} a sido registrado con éxito`);
+
   return usuario;
 }
 
 function registrarMascota() {
   alert('Usted a seleccionado el registro de una mascota a continuación se le solicitaran los datos de las misma');
   let nombre = prompt('Ingrese nombre de la mascota');
-  let tipo = prompt('Ingrese el tipo de mascota, si es gato, perro, pajaro, etc');
-  let color = parseInt(prompt('Ingrese el color de la mascota'));
+  let tipo = prompt('Ingrese el tipo de mascota, si es gato, perro, pajaro, etc').toLocaleLowerCase();
+  let color = prompt('Ingrese el color de la mascota');
   let edad = parseInt(prompt('Ingrese la edad de la mascota'));
-
-  if (edad === typeof Number) {
+  
+  // Verificar si edad ingresada no es un número, lo solicita hasta que el usuario ingrese un número
+  while (isNaN(edad)) {
     alert('La edad debe ser un número sin decimales');
     edad = parseInt(prompt('Ingrese la edad de la mascota'));
   }
@@ -62,16 +61,18 @@ function registrarMascota() {
   const mascota = {
     nombre,
     tipo,
-    color,
     edad,
+    color,
   };
 
+  alert(`Felicitaciones la mascota con el nombre ${nombre} fue registrada con éxito edad ${mascota.edad}`);
+  
   // Guardamos la mascota registrada en el array de mascotas
   mascotas.push(mascota);
-  alert(`Felicitaciones la mascota con el nombre ${nombre} fue registrada con éxito`);
 
   opcionesRegistroMascotas();
 }
+
 
 // Está función ejecuta un menú de opciones para el registro de mascotas si desea o no registrar una mascota nueva
 function opcionesRegistroMascotas() {
@@ -105,6 +106,9 @@ function menuAdopcion() {
       menuAdopcion();
     }
   } else if (opcion === 2) {
+    buscarMascotasPorTipo();
+  } else if (opcion === 3) {
+    menuOpciones();
   }
 }
 
@@ -118,15 +122,44 @@ function mostrarMascotas() {
     `);
 
     let opcion = parseInt(prompt(`¿Desea adoptar la mascota ${mascota.nombre}? \n1) Si \n2) No y Continuar viendo`));
-    //TODO hacer la lógica para que muestre una por una las mascotas y luego pregunte si quiere adoptar, en caso de que si que corte el ciclo y sino que continúe hasta que se quede sin mascota y salga un cartel de aviso que no hay más mascotas para adoptar, volver al menú de adopción
+
     if (opcion === 1) {
-      adoptarMascota(mascota.nombre);
-      //* si continúa el ciclo poner un return o un break
+      return adoptarMascota(mascota.nombre);
     } else if (mascotas.length === 0) {
-      alert('No hay mascotas registradas para adoptar')
-    } 
-    menuAdopcion();
+      alert('No hay mascotas registradas para adoptar');
+      menuAdopcion();
+    }
   });
+  menuAdopcion();
 }
 
-function adoptarMascota(nombre) {}
+function adoptarMascota(nombre) {
+  let usuarioAdoptante = registroUsuario();
+  alert(`Felicitaciones ${usuarioAdoptante.nombre} adoptaste a ${nombre}`);
+
+  // Eliminar mascota registrada
+  mascotas = mascotas.filter((mascota) => mascota.nombre !== nombre);
+}
+
+// Esta función busca las mascotas por el tipo ingresado por el usuario
+function buscarMascotasPorTipo() {
+  let tipo = prompt('Ingrese el tipo de mascota que desea buscar').toLocaleLowerCase();
+  let chequearTipo = mascotas.find(mascota => mascota.tipo === tipo)
+  
+  if (!chequearTipo) {
+    alert(`El tipo de mascota ${tipo} no se encuentra registrado en nuestra base de datos`)
+  }
+  const mascotasFiltradas = mascotas.filter((mascota) => mascota.tipo === tipo);
+  mascotasFiltradas.forEach((mascota) => {
+    alert(`Nombre: ${mascota.nombre} \nTipo: ${mascota.tipo} \nEdad: ${mascota.edad} \Color: ${mascota.color}`);
+    let opcion = parseInt(prompt(`¿Desea adoptar la mascota ${mascota.nombre}? \n1) Si \n2) No y Continuar viendo`));
+    if (opcion === 1) {
+      return adoptarMascota(mascota.nombre);
+    } else if (mascotas.length === 0) {
+      alert('No hay mascotas registradas para adoptar');
+      menuAdopcion();
+    }
+  });
+
+  menuAdopcion();
+}
