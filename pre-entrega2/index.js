@@ -2,7 +2,6 @@
 
 alert('Bienvenido al sistema se adopción y registro de adopción de mascotas');
 
-let usuarios = [];
 let mascotas = [];
 
 function menuOpciones() {
@@ -19,11 +18,11 @@ function menuOpciones() {
   } else if (opcion === 3) {
     adoptarMascota();
   } else if (opcion === 4) {
-    alert('Gracias vuelva pronto')
+    alert('Gracias vuelva pronto');
     return;
   } else {
     alert('Por favor ingrese las opciones 1, 2, 3 o 4');
-    menuOpciones()
+    menuOpciones();
   }
 }
 
@@ -42,13 +41,10 @@ function registroUsuario() {
     telefono,
   };
 
-  // Guardamos el usuario en el array de usuarios
-  usuarios.push(usuario);
-  alert(`El usuario ${nombre} ${apellido} a sido registrado con éxito ahora lo redirigiremos al menú principal`)
-  menuOpciones()
+  alert(`El usuario ${nombre} ${apellido} a sido registrado con éxito ahora lo redirigiremos al menú principal`);
+  menuOpciones();
   return usuario;
 }
-
 
 function registrarMascota() {
   alert('Usted a seleccionado el registro de una mascota a continuación se le solicitaran los datos de las misma');
@@ -58,10 +54,10 @@ function registrarMascota() {
   let edad = parseInt(prompt('Ingrese la edad de la mascota'));
 
   if (edad === typeof Number) {
-    alert('La edad debe ser un número sin decimales')
+    alert('La edad debe ser un número sin decimales');
     edad = parseInt(prompt('Ingrese la edad de la mascota'));
   }
-  
+
   // Los datos ingresados por prompt se guardan en el objeto mascota
   const mascota = {
     nombre,
@@ -73,23 +69,64 @@ function registrarMascota() {
   // Guardamos la mascota registrada en el array de mascotas
   mascotas.push(mascota);
   alert(`Felicitaciones la mascota con el nombre ${nombre} fue registrada con éxito`);
-  let opcion = parseInt(prompt('¿Desea registrar otra mascota? \n1) Si \n2)No'))
+
+  opcionesRegistroMascotas();
+}
+
+// Está función ejecuta un menú de opciones para el registro de mascotas si desea o no registrar una mascota nueva
+function opcionesRegistroMascotas() {
+  let opcion = parseInt(prompt('¿Desea registrar otra mascota? \n1) Si \n2)No'));
 
   if (opcion === 1) {
-    registrarMascota()
+    registrarMascota();
   } else if (opcion === 2) {
-    alert('Sera redirigido al menú principal')
+    alert('Sera redirigido al menú principal');
     menuOpciones();
   } else {
-    //! Arreglar esto colocar un ciclo
-    alert('Elija entre las opciones 1 y 2')
-    opcion = parseInt(prompt('¿Desea registrar otra mascota? \n1) Si \n2)No'))
+    alert('Elija entre las opciones 1 y 2');
+    opcionesRegistroMascotas();
   }
 }
 
+// Esta función ejecuta un menú de opciones de adopción y determina que hacer de acuerdo a lo que el usuario decida
 function menuAdopcion() {
-  alert('Usted a seleccionado adoptar una mascota')
-  let opcion = parseInt(prompt('¿Que desea hacer? \n1) Mostrar el listado de mascotas registradas'))
+  alert('Usted a seleccionado adoptar una mascota');
+  let opcion = parseInt(
+    prompt(
+      '¿Que desea hacer? \n1) Mostrar el listado de mascotas registradas y elegir cual quiere adoptar \n2) Buscar una mascotas por tipo \n3) Volver al menú anterior'
+    )
+  );
+
+  if (opcion === 1) {
+    if (mascotas.length > 0) {
+      mostrarMascotas();
+    } else {
+      alert('No hay ninguna mascota registrada');
+      menuAdopcion();
+    }
+  } else if (opcion === 2) {
+  }
 }
 
-function adoptarMascota() {}
+function mostrarMascotas() {
+  mascotas.forEach((mascota) => {
+    alert(`
+    Nombre: ${mascota.nombre}\n
+    Edad: ${mascota.edad}\n
+    Tipo: ${mascota.tipo}\n
+    Color: ${mascota.color}      
+    `);
+
+    let opcion = parseInt(prompt(`¿Desea adoptar la mascota ${mascota.nombre}? \n1) Si \n2) No y Continuar viendo`));
+    //TODO hacer la lógica para que muestre una por una las mascotas y luego pregunte si quiere adoptar, en caso de que si que corte el ciclo y sino que continúe hasta que se quede sin mascota y salga un cartel de aviso que no hay más mascotas para adoptar, volver al menú de adopción
+    if (opcion === 1) {
+      adoptarMascota(mascota.nombre);
+      //* si continúa el ciclo poner un return o un break
+    } else if (mascotas.length === 0) {
+      alert('No hay mascotas registradas para adoptar')
+    } 
+    menuAdopcion();
+  });
+}
+
+function adoptarMascota(nombre) {}
