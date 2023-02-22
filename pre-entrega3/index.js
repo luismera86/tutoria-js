@@ -36,7 +36,8 @@ const petAge = document.querySelector('#petAge');
 const petImg = document.querySelector('#petImg');
 const petType = document.querySelector('#petType');
 const btnPetRegister = document.querySelector('#btnPetRegister');
-let pets = [];
+const pets = JSON.parse(localStorage.getItem('pets')) || [];
+
 
 const registerPets = () => {
   const pet = {
@@ -46,7 +47,8 @@ const registerPets = () => {
     petType: petType.value === '1' ? 'Gato' : 'Perro',
     petStatus: 'Sin Adoptar',
   };
-  pets.push(pet);
+  pets.push(pet)
+  console.log(pets)
   localStorage.setItem('pets', JSON.stringify(pets));
   renderPets();
 };
@@ -66,17 +68,22 @@ btnPetRegister.addEventListener('click', () => {
 const renderPets = () => {
   const petsStorage = JSON.parse(localStorage.getItem('pets'));
   const petList = document.querySelector('#petList');
-  pets = petsStorage;
 
-  pets.forEach((pet) => {
-    petList.innerHTML = `<th>${pet.petName}</th>
-    <th>${pet.petAge}</th>
-    <th>${pet.petType === '1' ? 'Gato' : 'Perro'}</th>
-    <th>${pet.petImg}</th>
-    <th>${pet.petStatus === undefined && 'Sin Adoptar'}</th>
-    <button id='btnInfo' class='btn btn-info'>Adoptar</button>
-    `;
-  });
+  if (pets !== null) {
+
+    petsStorage.forEach((pet) => {
+      petList.innerHTML += `
+      <th>${pet.petName}</th>
+      <th>${pet.petAge}</th>
+      <th>${pet.petType}</th>
+      <th> <img class="img-fluid figure-img" src="${pet.petImg}" alt="Img pet"></th>
+      <th>${pet.petStatus}</th>
+      <th><button id='btnInfo' class='btn btn-info'>Adoptar</button></th>
+      
+      `;
+    });
+  }
+
 };
 // const btnInfo = document.querySelector('#btnInfo')
 
